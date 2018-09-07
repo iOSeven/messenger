@@ -8,7 +8,12 @@
         </b-form>
         
         <b-list-group>
-
+            <contact-component
+                v-for="conversation in conversations"
+                :key="conversation.id"
+                :conversation="conversation">
+            </contact-component>
+            <!--
             <contact-component variant="dark">
             </contact-component>
 
@@ -17,7 +22,7 @@
                   
             <contact-component variant="secondary">
             </contact-component>
-
+            -->
         </b-list-group>
     </div>
 </template>
@@ -25,13 +30,19 @@
     export default {
         data() {
             return {
-                name: 'Juan Ramos',
-                lastMessage: 'Tú: Hasta luego',
-                lastTime: '1:37 pm'
+                conversations: []
             };
         }, 
         mounted() {
-            console.log('Component mounted.')
+            this.getConversations();
+        },
+        methods:{
+            getConversations(){
+                axios.get('/api/conversations')
+                .then((response) =>{
+                    this.conversations = response.data;
+                });
+            }
         }
     }
 </script>
