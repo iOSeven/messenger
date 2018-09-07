@@ -7,44 +7,30 @@
                     title="Conversacion activa"
                     class="h-100">
                 
-                <b-media vertical-align="center" class="mb-2">
-                    <b-img rounded="circle" slot="aside" blank blank-color="#ccc" width="40" alt="placeholder" />
-                    <b-card>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
-                        sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra
-                        turpis.
-                    </b-card>
-                </b-media>
-
-                <b-media right-align vertical-align="center" class="mb-2">
-                    <b-img rounded="circle" slot="aside" blank blank-color="#ccc" width="40" alt="placeholder" />
-                    <b-card>
-                        Donec lacinia
-                        congue felis in faucibus.
-                    </b-card>
-                </b-media>
+                <message-conversation-component 
+                    v-for="message in messages"
+                    :key="message.id"
+                    :written-by-me="message.written_by_me">
+                    {{ message.content }}
+                </message-conversation-component>
 
                 <div slot="footer">
-                    <b-form class="mb-0">
-                        
-                        
-
+                    <b-form class="mb-0" @submit.prevent="postMessage" autocomplete="off">
                         <b-input-group>
                             <b-form-input class="text-center"
                                         type="text"
+                                        v-model="newMessage"
                                         placeholder="Escribe un mensaje ...">
                             </b-form-input>
 
                             <b-input-group-append>
-                                <b-button variant="primary">Enviar</b-button>
+                                <b-button type="submit" variant="primary">Enviar</b-button>
                             </b-input-group-append>
                         </b-input-group>
                     </b-form>
                 </div>
-              </b-card>
-        
+            </b-card>
         </b-col>
-
         <b-col cols="4">
             <b-img rounded="circle" blank width="60" height="60" blank-color="#777" alt="img" class="m-1" />
             <p>Usuario seleccionado</p>
@@ -60,10 +46,34 @@
     export default {
         data() {
             return {
+                messages: [],
+                newMessage: ''
             };
         }, 
         mounted() {
-            console.log('Component mounted.')
+            this.getMessages();
+        },
+        methods: {
+            getMessages(){
+                axios.get('/api/messages')
+                .then((response) => {
+                    //console.log(response.data);
+                    this.messages = response.data;
+                });
+            },
+            postMessage(){
+                const params = {
+                    to_id: 2,
+                    content: this.newMessage
+                }
+                axios.post('/api/messages', params)
+                .then((response) => {
+                    if(response.data.success) {
+                        this.newMessage = '';
+                        this.getMessages();
+                    }
+                });
+            }
         }
     }
 </script>
