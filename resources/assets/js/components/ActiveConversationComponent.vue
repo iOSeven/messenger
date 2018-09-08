@@ -33,7 +33,7 @@
         </b-col>
         <b-col cols="4">
             <b-img rounded="circle" blank width="60" height="60" blank-color="#777" alt="img" class="m-1" />
-            <p>Usuario seleccionado</p>
+            <p>{{ contactName }}</p>
             <hr>
             <b-form-checkbox>
                 Desactivar notificaciones
@@ -44,11 +44,14 @@
 
 <script>
     export default {
+        props: {
+            contactId: Number,
+            contactName: String
+        },
         data() {
             return {
                 messages: [],
                 newMessage: '',
-                contactId: 2
             };
         }, 
         mounted() {
@@ -74,6 +77,12 @@
                         this.getMessages();
                     }
                 });
+            }
+        },
+        watch: {
+            contactId(value){
+                //console.log(`contact_id => ${this.contactId}`);
+                this.getMessages();
             }
         }
     }
