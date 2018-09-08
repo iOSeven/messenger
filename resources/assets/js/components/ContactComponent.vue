@@ -27,9 +27,6 @@
         },
         data() {
             return {
-                name: 'Juan Ramos',
-                lastMessage: 'Tú: Hasta luego',
-                lastTime: '1:37 pm'
             };
         }, 
         mounted() {

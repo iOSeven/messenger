@@ -33088,11 +33088,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         conversation: Object
     },
     data: function data() {
-        return {
-            name: 'Juan Ramos',
-            lastMessage: 'Tú: Hasta luego',
-            lastTime: '1:37 pm'
-        };
+        return {};
     },
     mounted: function mounted() {
         console.log('Component mounted.');
@@ -33258,6 +33254,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -33276,6 +33273,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get('/api/conversations').then(function (response) {
                 _this.conversations = response.data;
             });
+        },
+        selectConversation: function selectConversation(conversation) {
+            console.log(conversation);
         }
     }
 });
@@ -33308,7 +33308,12 @@ var render = function() {
         _vm._l(_vm.conversations, function(conversation) {
           return _c("contact-component", {
             key: conversation.id,
-            attrs: { conversation: conversation }
+            attrs: { conversation: conversation },
+            nativeOn: {
+              click: function($event) {
+                _vm.selectConversation(conversation)
+              }
+            }
           })
         })
       )
