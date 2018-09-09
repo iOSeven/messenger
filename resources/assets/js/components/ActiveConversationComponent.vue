@@ -2,18 +2,21 @@
     <b-row>
         <b-col cols="8">
             
-            <b-card footer-bg-variant="light"
+            <b-card no-body
+                    footer-bg-variant="light"
                     footer-border-variant="dark"
                     title="Conversacion activa"
                     class="h-100">
                 
-                <message-conversation-component 
-                    v-for="message in messages"
-                    :key="message.id"
-                    :written-by-me="message.written_by_me">
-                    {{ message.content }}
-                </message-conversation-component>
-
+                <b-card-body class="card-body-scroll">
+                    <message-conversation-component 
+                        v-for="message in messages"
+                        :key="message.id"
+                        :written-by-me="message.written_by_me">
+                            {{ message.content }}
+                    </message-conversation-component>
+                </b-card-body>
+                
                 <div slot="footer">
                     <b-form class="mb-0" @submit.prevent="postMessage" autocomplete="off">
                         <b-input-group>
@@ -42,29 +45,29 @@
     </b-row>
 </template>
 
+<style>
+    .card-body-scroll {
+        max-height: calc(100vh - 63px);
+        overflow-y: auto;
+    }
+</style>
+
 <script>
     export default {
         props: {
             contactId: Number,
-            contactName: String
+            contactName: String,
+            messages: Array
         },
         data() {
             return {
-                messages: [],
                 newMessage: '',
             };
         }, 
         mounted() {
-            this.getMessages();
+            //this.getMessages();
         },
         methods: {
-            getMessages(){
-                axios.get(`/api/messages?contact_id=${this.contactId}`)
-                .then((response) => {
-                    //console.log(response.data);
-                    this.messages = response.data;
-                });
-            },
             postMessage(){
                 const params = {
                     to_id: this.contactId,
@@ -74,16 +77,16 @@
                 .then((response) => {
                     if(response.data.success) {
                         this.newMessage = '';
-                        this.getMessages();
+                        //this.getMessages();
                     }
                 });
             }
-        },
+        }/*,
         watch: {
             contactId(value){
                 //console.log(`contact_id => ${this.contactId}`);
                 this.getMessages();
             }
-        }
+        }*/
     }
 </script>
