@@ -30,6 +30,10 @@
             };
         }, 
         mounted() {
+        	Echo.channel('example')
+			    .listen('MessageSent', (e) => {
+			        console.log(e);
+			});
         },
         methods:{
         	changeActiveConversation(conversation){

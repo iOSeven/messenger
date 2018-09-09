@@ -18,7 +18,7 @@
             };
         }, 
         mounted() {
-            console.log('Valor de writtenByMe: ', this.writtenByMe)
+            //console.log('Valor de writtenByMe: ', this.writtenByMe)
         }
     }
 </script>
