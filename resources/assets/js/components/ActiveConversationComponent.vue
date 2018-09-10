@@ -65,7 +65,7 @@
             };
         }, 
         mounted() {
-            //this.getMessages();
+            //this.scrollToBottom();
         },
         methods: {
             postMessage(){
@@ -77,16 +77,19 @@
                 .then((response) => {
                     if(response.data.success) {
                         this.newMessage = '';
-                        //this.getMessages();
+                        const message = response.data.message;
+                        message.written_by_me = true;
+                        this.$emit('messageCreated', message);
                     }
                 });
+            },
+            scrollToBottom(){
+                const el = document.querySelector('.card-body-scroll');
+                el.scrollTop = el.scrollHeight;
             }
-        }/*,
-        watch: {
-            contactId(value){
-                //console.log(`contact_id => ${this.contactId}`);
-                this.getMessages();
-            }
-        }*/
+        },
+        updated() {
+            this.scrollToBottom();
+        }
     }
 </script>
