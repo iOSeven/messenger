@@ -3,11 +3,10 @@
 	    <b-row no-gutters>
 
 	        <b-col cols="4">
-	            <contact-list-component 
-	            	@conversationSelected="changeActiveConversation($event)"
-                    :conversations="conversations">
-	            	
-	            </contact-list-component>
+
+                <contact-form-component />
+
+	            <contact-list-component />
 	        </b-col>
 
 	        <b-col cols="8">
@@ -15,10 +14,9 @@
 	         		v-if="selectedConversation"
 	        		:contact-id="selectedConversation.contact_id"
 	        		:contact-name="selectedConversation.contact_name"
-	        		:messages="messages"
-                    @messageCreated="addMessage($event)">
-	           	
-	           	</active-conversation-component>
+                    :contact-image="selectedConversation.contact_image"
+                    :my-image="myImageUrl"
+	        		@messageCreated="addMessage($event)" />
 	        </b-col>
 	    </b-row>
 	</b-container>
@@ -26,19 +24,20 @@
 <script>
 	export default {
         props: {
-        	userId: Number
+        	user: Object
         },
         data() {
             return {
-            	selectedConversation: null,
-            	messages: [],
-                conversations: []
+            	//selectedConversation: null,
+            	//messages: [],
+                //conversations: [],
+                //querySearch: ''
             };
         }, 
         mounted() {
-            this.getConversations();
+            this.$store.dispatch('getConversations');
 
-        	Echo.private(`users.${this.userId}`)
+        	Echo.private(`users.${this.user.id}`)
 			    .listen('MessageSent', (data) => {
                     const message = data.message;
                     message.written_by_me = false;
@@ -58,46 +57,36 @@
                 );
         },
         methods:{
-        	changeActiveConversation(conversation){
-        		//console.log('nueva conv seleccionada', conversation);
-        		this.selectedConversation = conversation;
-        		this.getMessages();
-        	},
-        	getMessages(){
-                axios.get(`/api/messages?contact_id=${this.selectedConversation.contact_id}`)
-                .then((response) => {
-                    //console.log(response.data);
-                    this.messages = response.data;
-                });
-            },
             addMessage(message){
                 const conversation = this.conversations.find((conversation) => {
                     return conversation.contact_id == message.from_id ||
                             conversation.contact_id == message.to_id
                 });
 
-                const author = this.userId === message.from_id ? 'Tú' : conversation.contact_name;
+                const author = this.user.id === message.from_id ? 'Tú' : conversation.contact_name;
                 conversation.last_message = `${author}: ${message.content}`;
                 conversation.last_time = message.created_at;
 
 
                 if (this.selectedConversation.contact_id == message.from_id 
                     || this.selectedConversation.contact_id == message.to_id) {
-                    this.messages.push(message);
+                    this.$store.commit('addMessages', message);
                 }
             },
-            getConversations(){
-                axios.get('/api/conversations')
-                .then((response) =>{
-                    this.conversations = response.data;
-                });
-            },
             changeStatus(user, status){
-                const index = this.conversations.findIndex((conversation) => {
+                const index = this.$store.state.conversations.findIndex((conversation) => {
                     return conversation.contact_id == user.id;
                 });
                 if(index >= 0)
-                    this.$set(this.conversations[index], 'online', status);
+                    this.$set(this.$store.state.conversations[index], 'online', status);
+            }
+        },
+        computed: {
+            selectedConversation() {
+                return this.$store.state.selectedConversation;
+            },
+            myImageUrl(){
+                return `/users/${this.user.image}`;
             }
         }
     }

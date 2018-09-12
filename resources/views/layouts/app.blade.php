@@ -20,15 +20,16 @@
     <!-- Styles -->
 </head>
 <body class="h-100">
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+
     <div id="app" class="h-100">
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
         
         <b-navbar toggleable type="dark" variant="primary">
             <b-navbar-toggle target="nav_text_collapse"></b-navbar-toggle>
 
-            <b-navbar-brand href="{{ url('/') }}">
+            <b-navbar-brand href="{{ url('/home') }}">
                 {{ config('app.name', 'Laravel') }}
             </b-navbar-brand>
             
@@ -40,6 +41,10 @@
                     @else
                         <!-- Navbar dropdowns -->
                         <b-nav-item-dropdown text="{{ Auth::user()->name }}" right>
+                            <b-dropdown-item href="{{ url('/profile') }}">
+                                Modificar perfil
+                            </b-dropdown-item>
+
                             <b-dropdown-item href="#" @click="logout">
                                 Cerrar sesión
                             </b-dropdown-item>
