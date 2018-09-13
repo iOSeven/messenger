@@ -1692,40 +1692,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        contactId: Number,
-        contactName: String,
-        contactImage: String,
-        myImage: String
-    },
+    props: {},
     data: function data() {
         return {
             newMessage: ''
         };
     },
-    mounted: function mounted() {
-        //this.scrollToBottom();
-    },
+    mounted: function mounted() {},
 
     methods: {
         postMessage: function postMessage() {
-            var _this = this;
-
-            var params = {
-                to_id: this.contactId,
-                content: this.newMessage
-            };
-            axios.post('/api/messages', params).then(function (response) {
-                if (response.data.success) {
-                    _this.newMessage = '';
-                    var message = response.data.message;
-                    message.written_by_me = true;
-                    _this.$emit('messageCreated', message);
-                }
-            });
+            this.$store.dispatch('postMessage', this.newMessage);
         },
         scrollToBottom: function scrollToBottom() {
             var el = document.querySelector('.card-body-scroll');
@@ -1733,6 +1712,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     computed: {
+        myImage: function myImage() {
+            return '/users/' + this.$store.state.user.image;
+        },
+        selectedConversation: function selectedConversation() {
+            return this.$store.state.selectedConversation;
+        },
         messages: function messages() {
             return this.$store.state.messages;
         }
@@ -1937,27 +1922,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
         user: Object
     },
     data: function data() {
-        return {
-            //selectedConversation: null,
-            //messages: [],
-            //conversations: [],
-            //querySearch: ''
-        };
+        return {};
     },
     mounted: function mounted() {
         var _this = this;
+
+        this.$store.commit('setUser', this.user);
 
         this.$store.dispatch('getConversations');
 
@@ -1980,19 +1956,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
-        addMessage: function addMessage(message) {
-            var conversation = this.conversations.find(function (conversation) {
-                return conversation.contact_id == message.from_id || conversation.contact_id == message.to_id;
-            });
-
-            var author = this.user.id === message.from_id ? 'Tú' : conversation.contact_name;
-            conversation.last_message = author + ': ' + message.content;
-            conversation.last_time = message.created_at;
-
-            if (this.selectedConversation.contact_id == message.from_id || this.selectedConversation.contact_id == message.to_id) {
-                this.$store.commit('addMessages', message);
-            }
-        },
+        addMessage: function addMessage(message) {},
         changeStatus: function changeStatus(user, status) {
             var index = this.$store.state.conversations.findIndex(function (conversation) {
                 return conversation.contact_id == user.id;
@@ -2003,9 +1967,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     computed: {
         selectedConversation: function selectedConversation() {
             return this.$store.state.selectedConversation;
-        },
-        myImageUrl: function myImageUrl() {
-            return '/users/' + this.user.image;
         }
     }
 });
@@ -49423,19 +49384,7 @@ var render = function() {
             { attrs: { cols: "8" } },
             [
               _vm.selectedConversation
-                ? _c("active-conversation-component", {
-                    attrs: {
-                      "contact-id": _vm.selectedConversation.contact_id,
-                      "contact-name": _vm.selectedConversation.contact_name,
-                      "contact-image": _vm.selectedConversation.contact_image,
-                      "my-image": _vm.myImageUrl
-                    },
-                    on: {
-                      messageCreated: function($event) {
-                        _vm.addMessage($event)
-                      }
-                    }
-                  })
+                ? _c("active-conversation-component")
                 : _vm._e()
             ],
             1
@@ -49608,8 +49557,7 @@ var render = function() {
               attrs: {
                 "no-body": "",
                 "footer-bg-variant": "light",
-                "footer-border-variant": "dark",
-                title: "Conversacion activa"
+                "footer-border-variant": "dark"
               }
             },
             [
@@ -49625,7 +49573,7 @@ var render = function() {
                         "written-by-me": message.written_by_me,
                         image: message.written_by_me
                           ? _vm.myImage
-                          : _vm.contactImage
+                          : _vm.selectedConversation.contact_image
                       }
                     },
                     [
@@ -49710,7 +49658,7 @@ var render = function() {
           _c("b-img", {
             staticClass: "m-1",
             attrs: {
-              src: _vm.contactImage,
+              src: _vm.selectedConversation.contact_image,
               rounded: "circle",
               width: "60",
               height: "60",
@@ -49718,7 +49666,7 @@ var render = function() {
             }
           }),
           _vm._v(" "),
-          _c("p", [_vm._v(_vm._s(_vm.contactName))]),
+          _c("p", [_vm._v(_vm._s(_vm.selectedConversation.contact_name))]),
           _vm._v(" "),
           _c("hr"),
           _vm._v(" "),
@@ -49754,7 +49702,7 @@ var content = __webpack_require__("./node_modules/css-loader/index.js!./node_mod
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("164565be", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("1d4123c4", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -62011,23 +61959,15 @@ module.exports = function(module) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__("./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_bootstrap_vue__ = __webpack_require__("./node_modules/bootstrap-vue/es/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bootstrap_vue__ = __webpack_require__("./node_modules/bootstrap-vue/es/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store__ = __webpack_require__("./resources/assets/js/store.js");
 __webpack_require__("./resources/assets/js/bootstrap.js");
 
 
 
 
 
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_bootstrap_vue__["a" /* default */]);
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
-
-//window.eventBus = new Vue();
-
-
-//import Vue from 'vue' //No se usa es equivalente a la de arriba
-//import BootstrapVue from 'bootstrap-vue'
-//Vue.use(BootstrapVue);
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_bootstrap_vue__["a" /* default */]);
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('messenger-component', __webpack_require__("./resources/assets/js/components/MessengerComponent.vue"));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('contact-component', __webpack_require__("./resources/assets/js/components/ContactComponent.vue"));
@@ -62038,55 +61978,9 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('status-component', __webp
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('profile-form-component', __webpack_require__("./resources/assets/js/components/ProfileFormComponent.vue"));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('contact-form-component', __webpack_require__("./resources/assets/js/components/ContactFormComponent.vue"));
 
-// Make sure to call Vue.use(Vuex) first if using a module system
-var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
-    state: {
-        messages: [],
-        selectedConversation: null,
-        conversations: [],
-        querySearch: ''
-    },
-    mutations: {
-        newMessagesList: function newMessagesList(state, messages) {
-            state.messages = messages;
-        },
-        addMessages: function addMessages(state, messages) {
-            state.messages.push(messages);
-        },
-        selectConversation: function selectConversation(state, conversation) {
-            state.selectedConversation = conversation;
-        },
-        newQuerySearch: function newQuerySearch(state, newValue) {
-            state.querySearch = newValue;
-        },
-        newConversationsList: function newConversationsList(state, conversations) {
-            state.conversations = conversations;
-        }
-    },
-    actions: {
-        getMessages: function getMessages(context, conversation) {
-            axios.get('/api/messages?contact_id=' + conversation.contact_id).then(function (response) {
-                context.commit('selectConversation', conversation);
-                context.commit('newMessagesList', response.data);
-            });
-        },
-        getConversations: function getConversations(context) {
-            axios.get('/api/conversations').then(function (response) {
-                context.commit('newConversationsList', response.data);
-            });
-        }
-    }, getters: {
-        conversationsFiltered: function conversationsFiltered(state) {
-            return state.conversations.filter(function (conversation) {
-                return conversation.contact_name.toLowerCase().includes(state.querySearch.toLowerCase());
-            });
-        }
-    }
-});
-
 var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
     el: '#app',
-    store: store,
+    store: __WEBPACK_IMPORTED_MODULE_2__store__["a" /* default */],
     methods: {
         logout: function logout() {
             document.getElementById('logout-form').submit();
@@ -62567,6 +62461,95 @@ if (false) {(function () {
 
 module.exports = Component.exports
 
+
+/***/ }),
+
+/***/ "./resources/assets/js/store.js":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__("./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__("./node_modules/vuex/dist/vuex.esm.js");
+
+
+
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
+
+// Make sure to call Vue.use(Vuex) first if using a module system
+/* harmony default export */ __webpack_exports__["a"] = (new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
+    state: {
+        messages: [],
+        selectedConversation: null,
+        conversations: [],
+        querySearch: '',
+        user: null
+    },
+    mutations: {
+        setUser: function setUser(state, user) {
+            state.user = user;
+        },
+        newMessagesList: function newMessagesList(state, messages) {
+            state.messages = messages;
+        },
+        addMessages: function addMessages(state, message) {
+            var conversation = state.conversations.find(function (conversation) {
+                return conversation.contact_id == message.from_id || conversation.contact_id == message.to_id;
+            });
+
+            var author = state.user.id === message.from_id ? 'Tú' : conversation.contact_name;
+            conversation.last_message = author + ': ' + message.content;
+            conversation.last_time = message.created_at;
+
+            if (state.selectedConversation.contact_id == message.from_id || state.selectedConversation.contact_id == message.to_id) state.messages.push(messages);
+        },
+        selectConversation: function selectConversation(state, conversation) {
+            state.selectedConversation = conversation;
+        },
+        newQuerySearch: function newQuerySearch(state, newValue) {
+            state.querySearch = newValue;
+        },
+        newConversationsList: function newConversationsList(state, conversations) {
+            state.conversations = conversations;
+        }
+    },
+    actions: {
+        getMessages: function getMessages(context, conversation) {
+            axios.get('/api/messages?contact_id=' + conversation.contact_id).then(function (response) {
+                context.commit('selectConversation', conversation);
+                context.commit('newMessagesList', response.data);
+            });
+        },
+        getConversations: function getConversations(context) {
+            axios.get('/api/conversations').then(function (response) {
+                context.commit('newConversationsList', response.data);
+            });
+        },
+        postMessage: function postMessage(context, newMessage) {
+            var params = {
+                to_id: context.state.selectedConversation.contact_id,
+                content: newMessage
+            };
+
+            axios.post('/api/messages', params).then(function (response) {
+                if (response.data.success) {
+                    newMessage = '';
+
+                    var message = response.data.message;
+                    message.written_by_me = true;
+                    context.commit('addMessages', message);
+                }
+            });
+        }
+    },
+    getters: {
+        conversationsFiltered: function conversationsFiltered(state) {
+            return state.conversations.filter(function (conversation) {
+                return conversation.contact_name.toLowerCase().includes(state.querySearch.toLowerCase());
+            });
+        }
+    }
+}));
 
 /***/ }),
 
