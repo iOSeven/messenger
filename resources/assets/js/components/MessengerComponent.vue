@@ -26,14 +26,21 @@
         }, 
         mounted() {
             this.$store.commit('setUser', this.user);
-
-            this.$store.dispatch('getConversations');
+            this.$store
+            .dispatch('getConversations')
+            .then(() => {
+                const conversationId = this.$route.params.conversationId;
+                if(conversationId) {
+                    const conversation = this.$store.getters.getConversationById(conversationId);
+                    //console.log('conver', conversation);
+                    this.$store.dispatch('getMessages', conversation);
+                }
+            });
 
         	Echo.private(`users.${this.user.id}`)
 			    .listen('MessageSent', (data) => {
                     const message = data.message;
                     message.written_by_me = false;
-
                     this.addMessage(message);
 			});
 
@@ -49,15 +56,15 @@
                 );
         },
         methods:{
-            addMessage(message){
-                
-            },
             changeStatus(user, status){
                 const index = this.$store.state.conversations.findIndex((conversation) => {
                     return conversation.contact_id == user.id;
                 });
                 if(index >= 0)
                     this.$set(this.$store.state.conversations[index], 'online', status);
+            },
+            addMessage(message){
+                this.$store.commit('addMessages', message);
             }
         },
         computed: {

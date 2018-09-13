@@ -31,7 +31,7 @@ export default new Vuex.Store({
 
             if (state.selectedConversation.contact_id == message.from_id 
                 || state.selectedConversation.contact_id == message.to_id)
-                state.messages.push(messages);
+                state.messages.push(message);
         },
         selectConversation(state, conversation){
             state.selectedConversation = conversation;
@@ -45,7 +45,7 @@ export default new Vuex.Store({
     },
     actions: {
         getMessages(context, conversation){
-            axios.get(`/api/messages?contact_id=${conversation.contact_id}`)
+            return axios.get(`/api/messages?contact_id=${conversation.contact_id}`)
             .then( 
                 response => {
                     context.commit('selectConversation', conversation);
@@ -54,7 +54,7 @@ export default new Vuex.Store({
             );
         },
         getConversations(context){
-            axios.get('/api/conversations')
+            return axios.get('/api/conversations')
             .then(response =>{
                 context.commit('newConversationsList', response.data);
             });
@@ -65,7 +65,7 @@ export default new Vuex.Store({
                 content: newMessage
             }
 
-            axios.post('/api/messages', params)
+            return axios.post('/api/messages', params)
             .then((response) => {
                 if(response.data.success) {
                     newMessage = '';
@@ -85,6 +85,14 @@ export default new Vuex.Store({
                     .toLowerCase()
                     .includes(state.querySearch.toLowerCase())
             );
+        },
+        getConversationById(state) {
+            return function(conversationId) {
+                return state.conversations.find(
+                    conversation => 
+                        conversation.id == conversationId
+                );
+            }
         }
     }
 });
