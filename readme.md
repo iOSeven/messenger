@@ -7,59 +7,48 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
-## About Laravel
+## Requisitos previos
+1.- php 7.1
+2.- MySql o MariaDb
+3.- Xampp (ya contiene los 2 sistemas anteriores) <a href="https://www.apachefriends.org/es/index.html">Aquí</a>
+4.- Node.js <a href="https://nodejs.org/es/download/">Aquí</a>
+5.- Npm <a href="https://docs.npmjs.com/cli/install">Aquí</a>
+6.- Una cuenta con un api en pusher <a href="https://pusher.com/">Aquí</a>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+## Implementación del módulo
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1.- Se debe descargar el proyecto en la carpeta <Publica> de tu servidor local
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+2.- Una vez finalizada la descargar deberas acceder por consola a la carpeta que se acaba de crear
 
-## Learning Laravel
+3.- Dentro de la carpeta se debe generar el archivo .env con la conexion a una BD en blanco
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+4.- Ubicar en el archivo env. la siguiente linea y reemplazarla por el siguiente código
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+BROADCAST_DRIVER=log -> Anterior
 
-## Laravel Sponsors
+BROADCAST_DRIVER=pusher -> Nuevo
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+5.- Ubicar en el archivo env. el siguiente código al final y reemplazarlo con los datos del api que se creo anterior mente en pusher
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_APP_CLUSTER=
 
-## Contributing
+Nota : en caso de no conocer el uso de pusher usar los datos genericos sig., esta api es mia la dejare activa a modo de ejemplo, para implementar en un proyecto nuevo se debe crear un api nueva por proyecto.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+PUSHER_APP_ID=595326
+PUSHER_APP_KEY=131078b213a6f8ac58a8
+PUSHER_APP_SECRET=5f297bcc089ae2bb71fe
+PUSHER_APP_CLUSTER=us2
 
-## Security Vulnerabilities
+6.- Ubicarse en el terminal o consola y ejecutar los siguientes comando en este orden
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+a) composer install
+b) npm install
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+c) php artisan key:generate
+d) php artisan migrate
+e) php artisan migrate:refresh --seed
+f) php artisan serve
