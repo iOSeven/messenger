@@ -37,15 +37,22 @@ BROADCAST_DRIVER=pusher -> Nuevo
 5.- Ubicar en el archivo env. el siguiente código al final y reemplazarlo con los datos del api que se creo anterior mente en pusher
 
 PUSHER_APP_ID=
+
 PUSHER_APP_KEY=
+
 PUSHER_APP_SECRET=
+
 PUSHER_APP_CLUSTER=
+
 
 Nota : en caso de no conocer el uso de pusher usar los datos genericos sig., esta api es mia la dejare activa a modo de ejemplo, para implementar en un proyecto nuevo se debe crear un api nueva por proyecto.
 
 PUSHER_APP_ID=595326
+
 PUSHER_APP_KEY=131078b213a6f8ac58a8
+
 PUSHER_APP_SECRET=5f297bcc089ae2bb71fe
+
 PUSHER_APP_CLUSTER=us2
 
 6.- Ubicarse en el terminal o consola y ejecutar los siguientes comando en este orden
