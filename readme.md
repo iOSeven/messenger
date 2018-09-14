@@ -9,10 +9,15 @@
 
 ## Requisitos previos
 1.- php 7.1
+
 2.- MySql o MariaDb
+
 3.- Xampp (ya contiene los 2 sistemas anteriores) <a href="https://www.apachefriends.org/es/index.html">Aquí</a>
+
 4.- Node.js <a href="https://nodejs.org/es/download/">Aquí</a>
+
 5.- Npm <a href="https://docs.npmjs.com/cli/install">Aquí</a>
+
 6.- Una cuenta con un api en pusher <a href="https://pusher.com/">Aquí</a>
 
 ## Implementación del módulo
