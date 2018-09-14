@@ -58,9 +58,14 @@ PUSHER_APP_CLUSTER=us2
 6.- Ubicarse en el terminal o consola y ejecutar los siguientes comando en este orden
 
 a) composer install
+
 b) npm install
 
+
 c) php artisan key:generate
+
 d) php artisan migrate
+
 e) php artisan migrate:refresh --seed
+
 f) php artisan serve
